@@ -50,8 +50,10 @@ POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")
 
 # Configurable connection pool parameters (faults will target POOL_SIZE & timeout)
-POOL_SIZE = int(os.getenv("POOL_SIZE", "5"))
-MAX_OVERFLOW = int(os.getenv("MAX_OVERFLOW", "0"))
+# Keep enough default headroom for concurrent charge and health-check checkouts;
+# env vars still override these values in constrained environments.
+POOL_SIZE = int(os.getenv("POOL_SIZE", "20"))
+MAX_OVERFLOW = int(os.getenv("MAX_OVERFLOW", "10"))
 POOL_TIMEOUT = float(os.getenv("POOL_TIMEOUT", "5.0"))
 
 DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
