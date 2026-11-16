@@ -128,8 +128,8 @@ class PaginatedOrdersResponse(BaseModel):
 @app.get("/health")
 def health() -> dict[str, Any]:
     try:
-        with engine.connect() as conn:
-            conn.execute(select(1))
+        with SessionLocal() as db:
+            db.execute(select(1))
         return {
             "status": "ok",
             "service": "orders",
