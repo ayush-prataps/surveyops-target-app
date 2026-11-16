@@ -128,7 +128,9 @@ class PaginatedOrdersResponse(BaseModel):
 @app.get("/health")
 def health() -> dict[str, Any]:
     try:
-        with engine.connect() as conn:
+        # Use a short, bounded connection acquisition for health checks to avoid
+        # competing with the main pool and to fail fast under pool exhaustion.
+        with engine.connect().execution_options(timeout=1) as conn:
             conn.execute(select(1))
         return {
             "status": "ok",
